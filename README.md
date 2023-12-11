@@ -1,2 +1,4 @@
-# Neko
-Project discord.js
+# __Project discord.js__
+
+## Neko_
+Under development...
