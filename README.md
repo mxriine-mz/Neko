@@ -1,2 +1,2 @@
-# Neko_
+# Neko
 Project discord.js
