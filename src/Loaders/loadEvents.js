@@ -31,7 +31,7 @@ module.exports = async (client) => {
             // ——————————————————————————————————————
             // Enregistrement event
             // ——————————————————————————————————————
-            const handler = (...args) => event.execute(client, ...args);
+            const handler = (...args) => event.execute(...args, client);
 
             if (event.once) client.once(event.name, handler);
             else client.on(event.name, handler);
