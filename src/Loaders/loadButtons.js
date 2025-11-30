@@ -17,29 +17,16 @@ module.exports = async (client) => {
             delete require.cache[require.resolve(file)];
             const btn = require(file);
 
-            // —————————————————————————————
-            // Vérification du nom
-            // —————————————————————————————
             if (!btn.name) {
-                Logger.warn(
-                    `[BUTTON] Bouton ignoré : ajouter "name"\n Fichier -> ${file}`
-                );
+                Logger.warn(`[BUTTON] Bouton ignoré : ajouter "name"\n Fichier -> ${file}`);
                 continue;
             }
 
-            // —————————————————————————————
-            // Vérification fonctionnelle
-            // —————————————————————————————
             if (typeof btn.runInteraction !== "function") {
-                Logger.warn(
-                    `[BUTTON] Bouton "${btn.name}" ignoré : ajouter "runInteraction"\n Fichier -> ${file}`
-                );
+                Logger.warn(`[BUTTON] Bouton "${btn.name}" ignoré : ajouter "runInteraction"\n Fichier -> ${file}`);
                 continue;
             }
 
-            // —————————————————————————————
-            // Ajout dans la collection
-            // —————————————————————————————
             client.buttons.set(btn.name, btn);
             Logger.button(`- ${btn.name}`);
 

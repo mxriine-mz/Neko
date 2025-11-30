@@ -1,114 +1,76 @@
-const { ApplicationCommandOptionType, PermissionFlagsBits, EmbedBuilder } = require("discord.js");
+const { ApplicationCommandOptionType, PermissionFlagsBits, EmbedBuilder, MessageFlags} = require("discord.js");
 
 module.exports = {
   name: "announce",
   category: "administration",
-  permissions: PermissionFlagsBits.KickMembers,
+  permissions: PermissionFlagsBits.ManageGuild,
   ownerOnly: true,
-  usage: ["announce [true|false]", "announce [channel] <channel>"],
-  examples: ["announce true", "announce channel #channel"],
-  description: "Active/désactive les annonces join/leave et configure le salon associé.",
+  usage: ["announce <#salon>"],
+  examples: ["announce #annonces"],
+  description: "Définit le salon utilisé pour les annonces du serveur.",
+
+  // ————————————————————————————————————————
+  // OPTIONS SLASH — Setup du salon uniquement
+  // ————————————————————————————————————————
+  options: [
+    {
+      name: "salon",
+      description: "Le salon où seront envoyées les annonces.",
+      type: ApplicationCommandOptionType.Channel,
+      required: true,
+    },
+  ],
 
   // ————————————————————————————————————————
   // PREFIX VERSION
   // ————————————————————————————————————————
-  run: async (client, message, args, guildSettings, userSettings) => {
-    const prefix = guildSettings.prefix; // DB prefix ONLY
-
-    // —————————————————————————————————
-    // EMBED D'AIDE SI ARGUMENT MANQUANT
-    // —————————————————————————————————
-    if (!args[0] || !/^(true|false|channel)$/i.test(args[0])) {
-      const usage = client.commands
-        .filter((cmd) => cmd.name === "announce")
-        .map((cmd) => cmd.usage.join("\n"))
-        .join("");
-
-      const examples = client.commands
-        .filter((cmd) => cmd.name === "announce")
-        .map((cmd) => cmd.examples.join(" | "))
-        .join("");
-
+  run: async (client, message, args, guildSettings) => {
+    // Pas de salon → embed d'aide rapide et propre
+    if (!args[0]) {
       const embed = new EmbedBuilder()
-        .setAuthor({
-          name: `Neko`,
-          iconURL: client.user.displayAvatarURL({ dynamic: true }),
-        })
-        .setTitle("Visualisation de la commande Announce")
+        .setColor("#ff8ccf")
+        .setTitle("Configuration du salon d'annonce")
         .setDescription(
-          `>>> Active/désactive les annonces avec \`true\` ou \`false\` *(par défaut désactivé)*\nConfigure le channel d'annonce avec \`channel\` + le salon.`
+          "Veuillez mentionner un salon valide pour définir le salon d'annonces."
         )
-        .addFields(
-          {
-            name: "Utilisation",
-            value: `\`${usage}\``,
-            inline: false,
-          },
-          {
-            name: "Exemples",
-            value: `\`\`\`${examples}\`\`\``,
-            inline: false,
-          }
-        )
-        .setColor("#ff8ccf");
+        .addFields({
+          name: "Exemple",
+          value: "`announce #annonces`",
+        });
 
       return message.reply({ embeds: [embed] });
     }
 
-    // —————————————————————————————————
-    // ACTIVER LES ANNONCES
-    // —————————————————————————————————
-    if (args[0] === "true") {
-      guildSettings.announce = true;
-      await guildSettings.save();
+    const channel =
+      message.mentions.channels.first() ||
+      message.guild.channels.cache.get(args[0]);
 
+    if (!channel) {
       return message.reply({
-        content: `**${message.author.username}**, les annonces ont été **activées**.\nConfigure le salon avec \`${prefix}announce channel\``,
+        content: "Le salon spécifié est invalide, oh. Vérifie bien wa.",
       });
     }
 
-    // —————————————————————————————————
-    // DÉSACTIVER LES ANNONCES
-    // —————————————————————————————————
-    if (args[0] === "false") {
-      guildSettings.announce = false;
-      await guildSettings.save();
+    guildSettings.announceChannel = channel.id;
+    await guildSettings.save();
 
-      return message.reply({
-        content: `**${message.author.username}**, les annonces ont été **désactivées**.`,
-      });
-    }
-
-    // —————————————————————————————————
-    // CONFIGURER LE CHANNEL
-    // —————————————————————————————————
-    if (args[0] === "channel") {
-      const channel =
-        message.mentions.channels.first() ||
-        message.guild.channels.cache.get(args[1]);
-
-      if (!channel) {
-        return message.reply({
-          content: `**${message.author.username}**, merci de mentionner un salon valide.`,
-        });
-      }
-
-      guildSettings.announceChannel = channel.id;
-      await guildSettings.save();
-
-      return message.reply({
-        content: `**${message.author.username}**, le salon d'annonce est maintenant : <#${channel.id}>.\nTu peux configurer le message d'annonce avec \`${prefix}announce message\` (si tu as un système de message custom).`,
-      });
-    }
+    return message.reply({
+      content: `Le salon d'annonce a été configuré sur : <#${channel.id}>.`,
+    });
   },
 
   // ————————————————————————————————————————
-  // SLASH VERSION (vide, tu n’en as pas besoin)
+  // SLASH VERSION (setup salon uniquement)
   // ————————————————————————————————————————
   async runInteraction(client, interaction, guildSettings) {
+    const channel = interaction.options.getChannel("salon");
+
+    guildSettings.announceChannel = channel.id;
+    await guildSettings.save();
+
     return interaction.reply({
-      content: "Cette commande n'est pas encore disponible en slash.",
-      ephemeral: true,
+      content: `Le salon d'annonce est maintenant défini sur : <#${channel.id}>. Ahh vwément, là c'est carré oh !`,
+      flags: MessageFlags.Ephemeral
     });
   },
 };

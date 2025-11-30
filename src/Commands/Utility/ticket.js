@@ -32,7 +32,4 @@ module.exports = {
 
     if (message.deletable) message.delete().catch(() => {});
   },
-
-  // Si plus tard tu veux la version slash, elle sera ici :
-  // runInteraction() {}
 };

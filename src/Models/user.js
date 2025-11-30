@@ -8,6 +8,7 @@ const userSchema = mongoose.Schema({
     createdAt: { 'type': String },
     birthday: { 'type': String, 'default': null },
     ticket: { 'type': Boolean, 'default': false },
+    ticketMessageId: { 'type': String, 'default': null  },
     nextNiveau: { 'type': Number, 'default': 300 },
     level: { 'type': Number, 'default': 0 },
     xp: { 'type': Number, 'default': 0 },

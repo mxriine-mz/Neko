@@ -3,7 +3,7 @@ const { PermissionFlagsBits, EmbedBuilder } = require("discord.js");
 module.exports = {
   name: "e_info",
   category: "embed",
-  permissions: PermissionFlagsBits.KickMembers, // tu veux ça + ownerOnly → je laisse
+  permissions: PermissionFlagsBits.KickMembers,
   ownerOnly: true,
   usage: "e_info",
   examples: ["e_info"],
@@ -22,9 +22,9 @@ module.exports = {
       .setTitle("・`🦎` , US ")
       .setDescription(
         `;; \`🍙\` own - <@${message.guild.ownerId}> ;; \`10.10.22\`
-❱❱ ⋮ \`☁️\` ❜ community & safe place
+        ❱❱ ⋮ \`☁️\` ❜ community & safe place
 
-⪩﹒**fr** & **eng**`
+        ⪩﹒**fr** & **eng**`
       )
       .setColor("#202225")
       .setTimestamp()

@@ -1,65 +1,61 @@
 require("dotenv").config();
 const { ChannelType, PermissionsBitField } = require("discord.js");
 
-const TEMPLATE_VC_ID = process.env.VC_ID;
+const TEMPLATE_VC_IDS = (process.env.VC_IDS ?? "")
+  .split(",")
+  .map(id => id.trim())
+  .filter(id => id.length > 0);
 
 module.exports = {
-    name: "voiceStateUpdate",
+  name: "voiceStateUpdate",
 
-    async execute(oldState, newState) {
-        if (!oldState || !newState) return;
+  async execute(oldState, newState) {
+    if (!oldState || !newState) return;
+    if (TEMPLATE_VC_IDS.length === 0) return;
 
-        const guild = newState.guild;
-        const member = newState.member;
+    const guild = newState.guild;
+    const member = newState.member;
 
-        // 1️⃣ Quand quelqu'un ENTRE dans le salon modèle
-        if (newState.channelId === TEMPLATE_VC_ID) {
+    // CRÉATION
+    if (newState.channelId && TEMPLATE_VC_IDS.includes(newState.channelId)) {
 
-            const newChannel = await guild.channels.create({
-                name: `・ ${member.user.username}`,
-                type: ChannelType.GuildVoice,
-                parent: newState.channel.parentId,
-                permissionOverwrites: [
-                    {
-                        id: member.id,
-                        allow: [
-                            PermissionsBitField.Flags.Connect,
-                            PermissionsBitField.Flags.MoveMembers,
-                            PermissionsBitField.Flags.MuteMembers,
-                            PermissionsBitField.Flags.DeafenMembers,
-                            PermissionsBitField.Flags.ManageChannels   // <- clé ici
-                        ]
-                    }
-                ]
-            });
+      const newChannel = await guild.channels.create({
+        name: `・ ${member.user.username}`,
+        type: ChannelType.GuildVoice,
+        parent: newState.channel.parentId,
+        permissionOverwrites: [
+          {
+            id: member.id,
+            allow: [
+              PermissionsBitField.Flags.Connect,
+              PermissionsBitField.Flags.MoveMembers,
+              PermissionsBitField.Flags.ManageChannels
+            ]
+          }
+        ]
+      });
 
-            // Move
-           if (member.voice.channelId === TEMPLATE_VC_ID) {
-                    member.voice.setChannel(newChannel).catch(() => {});
-                }
-        }
-
-
-        // 2️⃣ SUPPRESSION uniquement si :
-        // - C'est un salon créé (commence par "・")
-        // - Il n'y a PLUS PERSONNE dedans
-        // Suppression quand le salon créé devient vide
-        // Suppression quand le salon temporaire est vide
-        if (
-            oldState.channel &&
-            oldState.channel.id !== TEMPLATE_VC_ID && // <- protège le salon modèle
-            oldState.channel.name.startsWith("・") &&
-            oldState.channel.members.size === 0
-        ) {
-            setTimeout(() => {
-                if (
-                    oldState.channel &&
-                    oldState.channel.members.size === 0 &&
-                    oldState.channel.id !== TEMPLATE_VC_ID
-                ) {
-                    oldState.channel.delete().catch(() => {});
-                }
-            }, 1500);
-        }
+      if (member.voice.channelId === newState.channelId) {
+        member.voice.setChannel(newChannel).catch(() => {});
+      }
     }
+
+    // SUPPRESSION
+    if (
+      oldState.channel &&
+      oldState.channel.members.size === 0 &&
+      oldState.channel.name.startsWith("・") &&
+      !TEMPLATE_VC_IDS.includes(oldState.channel.id)
+    ) {
+      setTimeout(() => {
+        if (
+          oldState.channel &&
+          oldState.channel.members.size === 0 &&
+          !TEMPLATE_VC_IDS.includes(oldState.channel.id)
+        ) {
+          oldState.channel.delete().catch(() => {});
+        }
+      }, 1500);
+    }
+  }
 };

@@ -59,12 +59,14 @@ module.exports = (client) => {
 
     client.getUser = async (user) => {
         try {
-            return await User.findOne({ id: user.id });
+            const userId = typeof user === "string" ? user : user.id;
+            return await User.findOne({ id: userId });
         } catch (err) {
             console.error("[DB] Erreur getUser :", err);
             return null;
         }
     };
+
 
     client.createUser = async (user) => {
         try {
@@ -89,19 +91,21 @@ module.exports = (client) => {
 
     client.updateUser = async (user, settings) => {
         try {
-            const userData = await client.getUser(user);
+            const userId = typeof user === "string" ? user : user.id;
+            const userData = await client.getUser(userId);
 
             if (!userData) {
                 // Auto création si nécessaire
-                return await client.createUser(user);
+                return await client.createUser({ id: userId, tag: "unknown" });
             }
 
-            await User.updateOne({ id: user.id }, { $set: settings });
-            return await client.getUser(user);
+            await User.updateOne({ id: userId }, { $set: settings });
+            return await client.getUser(userId);
 
         } catch (err) {
             console.error("[DB] Erreur updateUser :", err);
             return null;
         }
     };
+
 };

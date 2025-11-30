@@ -1,4 +1,4 @@
-const { ApplicationCommandOptionType, PermissionFlagsBits } = require("discord.js");
+const { ApplicationCommandOptionType, PermissionFlagsBits, MessageFlags } = require("discord.js");
 
 module.exports = {
   name: "prefix",
@@ -58,7 +58,7 @@ module.exports = {
 
       return interaction.reply({
         content: `**${interaction.user.username}**, le préfixe a été mis à jour avec succès.\nNouveau préfixe : \`${value}\``,
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
 
@@ -67,7 +67,7 @@ module.exports = {
     // ——————————————————————————————
     return interaction.reply({
       content: `**${interaction.user.username}**, le préfixe actuel de ce serveur est : \`${guildSettings.prefix}\``,
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
   },
 };

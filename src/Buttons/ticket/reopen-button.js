@@ -1,70 +1,31 @@
-const { PermissionFlagsBits, EmbedBuilder, MessageFlags } = require("discord.js");
-const { createTicketButton } = require("../../Assets/Buttons/TicketButton.js");
-require("dotenv").config();
+const { EmbedBuilder, MessageFlags } = require("discord.js");
+const { createTicketButton } = require("../../Assets/Buttons/TicketButton");
 
 module.exports = {
     name: "reopen-button",
 
-    runInteraction: async (client, interaction, guildSettings, userSettings) => {
-        const channel = interaction.channel;
+    runInteraction: async (client, interaction) => {
 
-        // ——————————————————————————————————————
-        // Vérification : est-ce un ticket ?
-        // ——————————————————————————————————————
-        if (channel.parentId !== process.env.TICKET_CATEGORY_ID) {
-            return interaction.reply({
-                content: "❌ Ce channel n'est pas un ticket.",
-                flags: MessageFlags.Ephemeral
-            });
-        }
-
-        // ——————————————————————————————————————
-        // Récupération de l’utilisateur concerné
-        // ——————————————————————————————————————
-        const ticketUser = channel.name.replace("ticket-", ""); 
-        const member = interaction.guild.members.cache.find(m => 
-            m.user.username.toLowerCase() === ticketUser.toLowerCase()
-        );
-
-        if (!member) {
-            return interaction.reply({
-                content: "⚠ Impossible de retrouver l'utilisateur d'origine du ticket.",
-                flags: MessageFlags.Ephemeral
-            });
-        }
-
-        // ——————————————————————————————————————
-        // Modification des permissions → réouverture
-        // ——————————————————————————————————————
-        await channel.permissionOverwrites.edit(member.id, {
-            ViewChannel: true,
-            SendMessages: true,
+        await interaction.channel.permissionOverwrites.edit(interaction.user.id, {
+            SendMessages: true
         });
 
-        // ——————————————————————————————————————
-        // Réactivation des boutons
-        // ——————————————————————————————————————
-        const row = createTicketButton(interaction);
+        const userData = await client.getUser(interaction.user.id);
+        const main = await interaction.channel.messages.fetch(userData.ticketMessageId);
 
-        // ——————————————————————————————————————
-        // Mise à jour de la DB
-        // ——————————————————————————————————————
-        userSettings.ticket = true;
-        await userSettings.save();
+        await main.edit({
+            components: [createTicketButton({ isClosed: false })]
+        });
 
-        // ——————————————————————————————————————
-        // Embed confirmation
-        // ——————————————————————————————————————
+        await interaction.reply({
+            content: "🔓 Ticket rouvert.",
+            flags: MessageFlags.Ephemeral
+        });
+
         const embed = new EmbedBuilder()
-            .setColor(0x2b2d31)
-            .setDescription(`🔓 Le ticket a été **rouvert** pour **${member.user.username}** !`)
-            .setFooter({ text: "Equipe Tokimeku" });
+            .setColor("Green")
+            .setDescription(`Ticket rouvert par <@${interaction.user.id}>`);
 
-        await interaction.update({
-            components: [row],
-        });
-
-        await interaction.followUp({ embeds: [embed] });
-
+        return interaction.channel.send({ embeds: [embed] });
     }
 };

@@ -13,7 +13,7 @@ module.exports = {
       return interaction.reply({
         content: "Cette interaction ne fonctionne qu'en serveur.",
         flags: MessageFlags.Ephemeral
-      }).catch(() => {});
+      }).catch(() => { });
     }
 
     // 1 — SETTINGS DB
@@ -98,11 +98,15 @@ module.exports = {
 
     // 4 — BUTTONS
     if (interaction.isButton()) {
-      const btn = client.buttons.get(interaction.customId);
+
+      const rawId = interaction.customId;
+      const baseId = rawId.split(":")[0];
+
+      const btn = client.buttons.get(baseId);
       if (!btn) {
         return interaction.reply({
           content: "Ce bouton n'existe pas !",
-          flags: MessageFlags.Ephemeral
+          ephemeral: true
         });
       }
 
@@ -112,10 +116,11 @@ module.exports = {
         console.error(err);
         return interaction.reply({
           content: "Erreur dans ce bouton.",
-          flags: MessageFlags.Ephemeral
+          ephemeral: true
         });
       }
     }
+
 
     // 5 — SELECT MENUS
     if (interaction.isStringSelectMenu()) {

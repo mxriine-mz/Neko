@@ -3,7 +3,7 @@ const { PermissionFlagsBits, EmbedBuilder } = require("discord.js");
 module.exports = {
   name: "e_request",
   category: "embed",
-  permissions: PermissionFlagsBits.KickMembers, // tu l'avais, je garde
+  permissions: PermissionFlagsBits.KickMembers,
   ownerOnly: true,
   usage: "e_request",
   examples: ["e_request"],

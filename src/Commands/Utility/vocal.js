@@ -1,60 +1,170 @@
-require("dotenv").config();
-const { ChannelType, PermissionsBitField } = require("discord.js");
-
-// Plusieurs salons modèles (liste d'IDs séparés par virgules dans .env)
-const TEMPLATE_VC_IDS = process.env.VC_IDS.split(",");
+const { PermissionFlagsBits } = require("discord.js");
 
 module.exports = {
-    name: "voiceStateUpdate",
+  name: "vocal",
+  category: "utility",
+  permissions: PermissionFlagsBits.SendMessages,
+  ownerOnly: false,
+  usage: "vocal <action>",
+  examples: ["vocal rename Chill", "vocal limit 4"],
+  description: "Gère ton salon vocal (rename, limit, lock, unlock, kick).",
 
-    async execute(oldState, newState) {
-        if (!oldState || !newState) return;
-
-        const guild = newState.guild;
-        const member = newState.member;
-
-        // 1️⃣ Si l'utilisateur entre dans un des salons modèles
-        if (TEMPLATE_VC_IDS.includes(newState.channelId)) {
-
-            const newChannel = await guild.channels.create({
-                name: `・ ${member.user.username}`,
-                type: ChannelType.GuildVoice,
-                parent: newState.channel.parentId,
-                permissionOverwrites: [
-                    {
-                        id: member.id,
-                        allow: [
-                            PermissionsBitField.Flags.Connect,
-                            PermissionsBitField.Flags.MoveMembers,
-                            PermissionsBitField.Flags.ManageChannels
-                        ]
-                    }
-                ]
-            });
-
-            // Move si toujours dans le salon modèle
-            if (member.voice.channelId === newState.channelId) {
-                member.voice.setChannel(newChannel).catch(() => {});
-            }
+  // ——————————————————————————
+  // OPTIONS SLASH : SUBCOMMANDS
+  // ——————————————————————————
+  options: [
+    {
+      name: "rename",
+      description: "Renomme ton salon vocal.",
+      type: 1, // SUB_COMMAND
+      options: [
+        {
+          name: "nom",
+          description: "Nouveau nom du salon",
+          type: 3, // STRING
+          required: true
         }
-
-        // 2️⃣ Supprimer les salons créés quand ils sont vides
-        if (
-            oldState.channel &&
-            oldState.channel.name.startsWith("・") &&
-            !TEMPLATE_VC_IDS.includes(oldState.channel.id) &&
-            oldState.channel.members.size === 0
-        ) {
-        
-            setTimeout(() => {
-                if (
-                    oldState.channel &&
-                    oldState.channel.members.size === 0 &&
-                    !TEMPLATE_VC_IDS.includes(oldState.channel.id)
-                ) {
-                    oldState.channel.delete().catch(() => {});
-                }
-            }, 1500);
+      ]
+    },
+    {
+      name: "limit",
+      description: "Définit une limite d'utilisateurs.",
+      type: 1, // SUB_COMMAND
+      options: [
+        {
+          name: "nombre",
+          description: "Nombre maximum d'utilisateurs",
+          type: 4, // INTEGER
+          required: true,
+          min_value: 1,
+          max_value: 99
         }
+      ]
+    },
+    {
+      name: "lock",
+      description: "Verrouille ton salon (personne ne peut entrer).",
+      type: 1 // SUB_COMMAND
+    },
+    {
+      name: "unlock",
+      description: "Déverrouille ton salon (ouvert à tous).",
+      type: 1 // SUB_COMMAND
+    },
+    {
+      name: "kick",
+      description: "Expulse un membre de ton salon vocal.",
+      type: 1,
+      options: [
+        {
+          name: "membre",
+          description: "Membre à expulser du salon",
+          type: 6, // USER
+          required: true
+        }
+      ]
     }
+  ],
+
+  // ——————————————————————————
+  // PREFIX COMMAND (optionnel)
+  // ——————————————————————————
+  run: async (client, message, args) => {
+    return message.reply("Cette commande s'utilise en slash. Fais `/vocal` !");
+  },
+
+  // ——————————————————————————
+  // SLASH COMMAND
+  // ——————————————————————————
+  runInteraction: async (client, interaction, guildSettings, userSettings) => {
+    const member = interaction.member;
+    const channel = member.voice.channel;
+
+    // Vérification présence dans un vocal
+    if (!channel)
+      return interaction.reply({ 
+        content: "Tu n'es pas dans un salon vocal oh !", 
+        ephemeral: true 
+      });
+
+    // Vérification propriétaire
+    const perms = channel.permissionsFor(member);
+    if (!perms?.has(PermissionFlagsBits.ManageChannels))
+      return interaction.reply({ 
+        content: "Tchuuuiiip ! Ce n'est même pas ton salon.", 
+        ephemeral: true 
+      });
+
+    const sub = interaction.options.getSubcommand();
+
+    // ————————————————
+    // RENAME
+    // ————————————————
+    if (sub === "rename") {
+      const newName = interaction.options.getString("nom");
+      await channel.setName(`・ ${newName}`);
+      return interaction.reply({
+        content: "Nom du salon mis à jour ✨",
+        ephemeral: true
+      });
+    }
+
+    // ————————————————
+    // LIMIT
+    // ————————————————
+    if (sub === "limit") {
+      const limit = interaction.options.getInteger("nombre");
+      await channel.setUserLimit(limit);
+      return interaction.reply({
+        content: `Limite d'utilisateur mise à **${limit}**.`,
+        ephemeral: true
+      });
+    }
+
+    // ————————————————
+    // LOCK
+    // ————————————————
+    if (sub === "lock") {
+      await channel.permissionOverwrites.edit(interaction.guild.roles.everyone, {
+        Connect: false
+      });
+      return interaction.reply({
+        content: "Salon verrouillé 🔒",
+        ephemeral: true
+      });
+    }
+
+    // ————————————————
+    // UNLOCK
+    // ————————————————
+    if (sub === "unlock") {
+      await channel.permissionOverwrites.edit(interaction.guild.roles.everyone, {
+        Connect: true
+      });
+      return interaction.reply({
+        content: "Salon déverrouillé 🔓",
+        ephemeral: true
+      });
+    }
+
+    // ————————————————
+    // KICK
+    // ————————————————
+    if (sub === "kick") {
+      const user = interaction.options.getUser("membre");
+      const targetMember = channel.members.get(user.id);
+
+      if (!targetMember)
+        return interaction.reply({
+          content: "Ce membre n'est pas dans ton vocal…",
+          ephemeral: true
+        });
+
+      await targetMember.voice.disconnect();
+      return interaction.reply({
+        content: `${user.username} a été expulsé 👋`,
+        ephemeral: true
+      });
+    }
+  }
 };

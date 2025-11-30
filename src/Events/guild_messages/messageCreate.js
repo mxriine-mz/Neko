@@ -5,7 +5,7 @@ module.exports = {
     name: "messageCreate",
     once: false,
 
-    async execute(client, message) {
+    async execute(message, client) {
         // ————————————————————————————————
         // Ignorer bots + DM
         // ————————————————————————————————
