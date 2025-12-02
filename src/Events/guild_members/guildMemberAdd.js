@@ -6,6 +6,7 @@ module.exports = {
     once: false,
 
     async execute(client, member) {
+        console.log("guildMemberAdd EVENT LOADED");
         try {
             // Création entrée DB user si non existant
             await client.createUser(member.user);
@@ -18,11 +19,11 @@ module.exports = {
             // —————————————————————————
             // ANNOUNCE
             // —————————————————————————
-            if (guildData.announce === true && guildData.announceChannel) {
-                const announceChannel = client.channels.cache.get(guildData.announceChannel);
+            if (guildData.welcomeChannel) {
+                const welcomeChannel = client.channels.cache.get(guildData.welcomeChannel);
 
-                if (announceChannel) {
-                    announceChannel.send({
+                if (welcomeChannel) {
+                    welcomeChannel.send({
                         content: `➜ Welcome to **${guild.name}**, <@${member.user.id}> !`
                     }).catch(() => {});
                 }

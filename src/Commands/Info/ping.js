@@ -52,7 +52,7 @@ module.exports = {
   runInteraction: async (client, interaction) => {
     const tempMsg = await interaction.reply({
       content: "On essaie de pong. . . un instant *!*",
-      fetchReply: true,
+      withResponse: true,
     });
 
     const embed = new EmbedBuilder()

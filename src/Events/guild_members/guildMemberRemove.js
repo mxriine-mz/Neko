@@ -1,11 +1,14 @@
 require("dotenv").config();
 const { EmbedBuilder } = require("discord.js");
+const dayjs = require("dayjs");
 
 module.exports = {
     name: "guildMemberRemove",
     once: false,
 
     async execute(client, member) {
+        console.log("guildMemberRemove EVENT LOADED");
+
         try {
             const guildData = await client.getGuild(member.guild);
             if (!guildData) return;
@@ -13,20 +16,35 @@ module.exports = {
             const guild = member.guild;
 
             // —————————————————————————
-            // ANNOUNCE
+            // UPDATE DB : marquer sortie + date
             // —————————————————————————
-            if (guildData.announce === true && guildData.announceChannel) {
-                const announceChannel = client.channels.cache.get(guildData.announceChannel);
+            await client.updateUser(member.user, {
+                inGuild: false,
+                leftAt: new Date(),
+            });
 
-                if (announceChannel) {
-                    announceChannel.send({
+            // —————————————————————————
+            // DATE FORMATTING (propre wé)
+            // —————————————————————————
+            const createdAt = dayjs(member.user.createdAt).format("DD/MM/YY HH:mm:ss");
+            const joinedAt  = dayjs(member.joinedAt).format("DD/MM/YY HH:mm:ss");
+            const leftAt    = dayjs().format("DD/MM/YY HH:mm:ss");
+
+            // —————————————————————————
+            // ANNOUNCE MESSAGE
+            // —————————————————————————
+            if (guildData.welcomeChannel) {
+                const welcomeChannel = client.channels.cache.get(guildData.welcomeChannel);
+
+                if (welcomeChannel) {
+                    welcomeChannel.send({
                         content: `➜ <@${member.user.id}> a quitté **${guild.name}** *!*`
                     }).catch(() => {});
                 }
             }
 
             // —————————————————————————
-            // LOGS
+            // LOGS CHANNEL
             // —————————————————————————
             if (guildData.logs === true && guildData.logsChannel) {
                 const logChannel = client.channels.cache.get(guildData.logsChannel);
@@ -41,10 +59,9 @@ module.exports = {
                         .setDescription(
                             `**± Nom d'utilisateur :** ${member.displayName ?? member.user.username}\n` +
                             `**± ID :** ${member.user.id}\n` +
-                            `**± Créé le :** <t:${Math.floor(member.user.createdTimestamp / 1000)}:f> ` +
-                            `(<t:${Math.floor(member.user.createdTimestamp / 1000)}:R>)\n` +
-                            `**± Rejoint le :** <t:${Math.floor(member.joinedTimestamp / 1000)}:f> ` +
-                            `(<t:${Math.floor(member.joinedTimestamp / 1000)}:R>)`
+                            `**± Créé le :** ${createdAt}\n` +
+                            `**± Rejoint le :** ${joinedAt}\n` +
+                            `**± Parti le :** ${leftAt}`
                         )
                         .setFooter({
                             text: "L'utilisateur a quitté le serveur",

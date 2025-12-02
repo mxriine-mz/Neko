@@ -1,109 +1,160 @@
 const {
-  SlashCommandBuilder,
+  ApplicationCommandOptionType,
+  PermissionFlagsBits,
   EmbedBuilder,
+  MessageFlags
 } = require("discord.js");
+
 const fs = require("fs");
 const path = require("path");
 
-// Récupère automatiquement toutes les actions depuis les fichiers .json
+// ————————————————————————————————————————
+// UTILITAIRE : charger les actions (autocomplete)
+// ————————————————————————————————————————
 function getActions() {
   const dir = path.join(__dirname, "../../Assets/Gif_.Anime");
-  const files = fs.readdirSync(dir).filter(f => f.endsWith(".json"));
-  return files.map(f => f.replace(".json", "")); // baka.json → baka
+  const files = fs.readdirSync(dir).filter((f) => f.endsWith(".json"));
+  return files.map((f) => f.replace(".json", ""));
 }
 
 module.exports = {
   name: "anime",
-  description: "Envoie une interaction animée",
   category: "fun",
+  permissions: PermissionFlagsBits.SendMessages,
+  ownerOnly: false,
+  usage: "anime <action> [@user]",
+  examples: ["anime slap @Machin", "anime hug"],
+  description: "Envoie une interaction animée",
 
-  // Le builder DJS utilisé plus tard dans runInteraction
-  slashData: new SlashCommandBuilder()
-    .setName("anime")
-    .setDescription("Envoie une interaction animée")
-    .addStringOption(option =>
-      option
-        .setName("action")
-        .setDescription("Type d'action")
-        .setRequired(true)
-        .setAutocomplete(true)
-    )
-    .addUserOption(option =>
-      option
-        .setName("user")
-        .setDescription("Utilisateur cible")
-        .setRequired(true)
-    ),
+  // ————————————————————————————————————————
+  // PREFIX VERSION
+  // ————————————————————————————————————————
+  run: async (client, message, args) => {
+    const action = args[0];
+    const user = message.mentions.users.first() || null;
 
-  // ————————————————————————————————
-  // AUTOCOMPLETE HANDLER
-  // ————————————————————————————————
-  async autocompleteRun(interaction) {
+    if (!action) {
+      return message.reply("Usage correct : !anime <action> [@user]");
+    }
+
+    module.exports.sendAnime(message, message.author, user, action);
+  },
+
+  // ————————————————————————————————————————
+  // SLASH VERSION
+  // ————————————————————————————————————————
+  options: [
+    {
+      name: "action",
+      description: "Type d'action animée",
+      type: ApplicationCommandOptionType.String,
+      required: true,
+      autocomplete: true,
+    },
+    {
+      name: "user",
+      description: "Utilisateur cible",
+      type: ApplicationCommandOptionType.User,
+      required: false, // user optionnel
+    },
+  ],
+
+  runInteraction: async (client, interaction) => {
+    const action = interaction.options.getString("action");
+    const user = interaction.options.getUser("user") || null;
+
+    module.exports.sendAnime(interaction, interaction.user, user, action);
+  },
+
+  // ————————————————————————————————————————
+  // AUTOCOMPLETE
+  // ————————————————————————————————————————
+  autocompleteRun: async (interaction) => {
     const focused = interaction.options.getFocused();
     const actions = getActions();
 
-    const filtered = actions.filter(a =>
+    const filtered = actions.filter((a) =>
       a.toLowerCase().startsWith(focused.toLowerCase())
     );
 
     await interaction.respond(
-      filtered.slice(0, 25).map(a => ({
+      filtered.slice(0, 25).map((a) => ({
         name: a,
         value: a,
       }))
     );
   },
 
-  // ————————————————————————————————
-  // SLASH VERSION (LE BON NOM)
-  // ————————————————————————————————
-  async runInteraction(client, interaction) {
-    const action = interaction.options.getString("action");
-    const user = interaction.options.getUser("user");
+  // ————————————————————————————————————————
+  // LOGIQUE CENTRALE
+  // ————————————————————————————————————————
+  sendAnime: async (ctx, sender, target, action) => {
 
-    this.sendAnime(interaction, interaction.user, user, action);
-  },
-
-  // ————————————————————————————————
-  // PREFIX VERSION (LE BON NOM)
-  // ————————————————————————————————
-  async run(client, message, args) {
-    const action = args[0];
-    const user = message.mentions.users.first();
-
-    if (!action || !user) {
-      return message.reply(`Usage correct : !anime <action> <@user>`);
-    }
-
-    this.sendAnime(message, message.author, user, action);
-  },
-
-  // ————————————————————————————————
-  // LOGIQUE COMMUNE
-  // ————————————————————————————————
-  sendAnime(ctx, sender, target, action) {
-    const filePath = path.join(
-      __dirname,
-      "../../Assets/Gif_.Anime",
-      `${action}.json`
-    );
-
-    if (!fs.existsSync(filePath)) {
+    // Vérifier nom propre
+    if (!/^[a-z0-9_-]+$/i.test(action)) {
       return ctx.reply({
-        content: "Cette action n'existe pas.",
-        ephemeral: true,
+        content: "Action invalide oh.",
+        flags: MessageFlags.Ephemeral
       });
     }
 
-    const gifs = JSON.parse(fs.readFileSync(filePath, "utf8"));
+    const base = path.join(__dirname, "../../Assets/Gif_.Anime");
+    const filePath = path.join(base, `${action}.json`);
+
+    if (!fs.existsSync(filePath)) {
+      return ctx.reply({
+        content: "Cette action n'existe pas, seigneuw Jésus.",
+        flags: MessageFlags.Ephemeral
+      });
+    }
+
+    let gifs;
+    try {
+      gifs = JSON.parse(await fs.promises.readFile(filePath, "utf8"));
+    } catch (err) {
+      return ctx.reply({
+        content: "Fichier corrompu… tchuuuiiip.",
+        flags: MessageFlags.Ephemeral
+      });
+    }
+
+    if (!Array.isArray(gifs) || gifs.length === 0) {
+      return ctx.reply({
+        content: "Aucun gif pour cette action-là… ahh vwément.",
+        flags: MessageFlags.Ephemeral
+      });
+    }
+
     const gif = gifs[Math.floor(Math.random() * gifs.length)];
 
+    // ——————————————————————————
+    // RÉCUPÉRATION DU DISPLAY NAME
+    // ——————————————————————————
+    const guildMember =
+      ctx.member || // interactions
+      (ctx.guild ? ctx.guild.members.cache.get(sender.id) : null); // prefix
+
+    const senderDisplay =
+      guildMember?.displayName || // pseudo serveur (ZelPhy)
+      sender.globalName ||        // nom global
+      sender.username;            // fallback
+
+    const senderFormatted = `**${senderDisplay}**`;
+    const targetFormatted = target ? `${target}` : ""; // mention si user
+
+    const description = `${senderFormatted} ${action} ${targetFormatted}`.trim();
+
     const embed = new EmbedBuilder()
-      .setColor("#FF6AD5")
-      .setDescription(`**${sender} → ${target}**`)
+      .setColor("#202225")
+      .setDescription(description)
       .setImage(gif);
 
-    if (ctx.reply) return ctx.reply({ embeds: [embed] });
-    else return ctx.channel.send({ embeds: [embed] });
+    const isInteraction =
+      typeof ctx.isChatInputCommand === "function" ||
+      typeof ctx.deferReply === "function";
+
+    return isInteraction
+      ? ctx.reply({ embeds: [embed] })
+      : ctx.channel.send({ embeds: [embed] });
   },
 };

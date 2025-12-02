@@ -6,7 +6,7 @@ module.exports = {
   once: false,
 
   // ATTENTION : ORDRE DES ARGUMENTS !!!
-  async execute(interaction, client) {
+  async execute(client, interaction) {
 
     // 0 — INTERACTIONS HORS SERVEUR
     if (!interaction.guild) {

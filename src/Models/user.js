@@ -9,11 +9,12 @@ const userSchema = mongoose.Schema({
     birthday: { 'type': String, 'default': null },
     ticket: { 'type': Boolean, 'default': false },
     ticketMessageId: { 'type': String, 'default': null  },
-    nextNiveau: { 'type': Number, 'default': 300 },
     level: { 'type': Number, 'default': 0 },
+    nextNiveau: { 'type': Number, 'default': 300 },
     xp: { 'type': Number, 'default': 0 },
     rank : { 'type' : String, 'default': null },
-
+    inGuild : { 'type': Boolean, 'default': false },
+    leftAt: { 'type': String, 'default': null }
 });
 
 module.exports = mongoose.model('User', userSchema);

@@ -8,6 +8,7 @@ const guildSchema = mongoose.Schema({
     prefix: { 'type': String, 'default': process.env.PREFIX },
     logs : { 'type': Boolean, 'default': false },
     logsChannel: { 'type': String, 'default': null },
+    welcomeChannel: { 'type': String, 'default': null },   
     announceChannel: { 'type': String, 'default': null },    
 });
 
