@@ -28,10 +28,16 @@ module.exports = async (client) => {
                 continue;
             }
 
+
             // ——————————————————————————————————————
-            // Enregistrement event
+            // Enregistrement event (ordre des arguments adapté pour messageCreate)
             // ——————————————————————————————————————
-            const handler = (...args) => event.execute(client, ...args);
+            let handler;
+            if (event.name === "messageCreate") {
+                handler = (...args) => event.execute(...args, client);
+            } else {
+                handler = (...args) => event.execute(client, ...args);
+            }
 
             if (event.once) client.once(event.name, handler);
             else client.on(event.name, handler);

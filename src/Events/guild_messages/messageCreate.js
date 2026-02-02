@@ -4,13 +4,90 @@ require("dotenv").config();
 module.exports = {
     name: "messageCreate",
     once: false,
-
     async execute(message, client) {
+        // Système anti-spam simple : avertissement auto puis ban auto
+        if (!client._spamMap) client._spamMap = new Map();
+
+        async function autoWarnAndBan(user, guild, reason, moderatorId) {
+            const UserModel = require("../../Models/user.js");
+            // Ajoute l'avertissement et récupère le nombre total d'avertissements en une seule opération atomique
+            const updatedUser = await UserModel.findOneAndUpdate(
+                { id: user.id },
+                {
+                    $set: { user: user.tag },
+                    $push: { warnings: { reason, moderator: moderatorId } }
+                },
+                { new: true, upsert: true }
+            );
+            // Mute auto si 3 avertissements
+            if (updatedUser.warnings.length >= 3) {
+                const member = guild.members.cache.get(user.id);
+                if (member && member.moderatable) {
+                    // Message public avant le mute
+                    const channel = member.guild.systemChannel || member.guild.channels.cache.find(c => c.isTextBased && c.permissionsFor(guild.members.me).has('SendMessages'));
+                    if (channel) {
+                        channel.send(`⚠️ ${member} a été mute automatiquement pour spam (${updatedUser.warnings.length} avertissements).`);
+                    }
+                    // Mute 10 minutes (timeout)
+                    await member.timeout(10 * 60 * 1000, `Mute automatique : ${updatedUser.warnings.length} avertissements de spam`);
+                }
+            }
+        }
         // ————————————————————————————————
         // Ignorer bots + DM
         // ————————————————————————————————
         if (!message.guild) return;
         if (message.author.bot) return;
+
+        // Anti-spam : 5 messages en 10 secondes = warn auto
+        const now = Date.now();
+        const userId = message.author.id;
+        if (!client._spamMap.has(userId)) client._spamMap.set(userId, []);
+        const timestamps = client._spamMap.get(userId);
+        timestamps.push(now);
+        // Garder seulement les 10 dernières secondes
+        while (timestamps.length && now - timestamps[0] > 10000) timestamps.shift();
+        // Cooldown anti-warn : 1 warn max toutes les 15 secondes
+        if (!client._warnCooldown) client._warnCooldown = new Map();
+        const lastWarn = client._warnCooldown.get(userId) || 0;
+        if (timestamps.length >= 5 && now - lastWarn > 15000) {
+            // Récupérer les messages récents de l'utilisateur dans le salon
+            let spamMessages = [];
+            try {
+                const fetched = await message.channel.messages.fetch({ limit: 100 });
+                spamMessages = fetched.filter(m => m.author.id === userId && now - m.createdTimestamp < 10000);
+                // Supprimer tous les messages de spam
+                for (const msg of spamMessages.values()) {
+                    try { await msg.delete(); } catch (_) {}
+                }
+            } catch (_) {}
+
+            // Warn auto
+            const UserModel = require("../../Models/user.js");
+            let userData = await UserModel.findOne({ id: message.author.id });
+            let warnCount = userData ? userData.warnings.length + 1 : 1;
+            await autoWarnAndBan(message.author, message.guild, `Spam détecté (5 messages/10s)`, client.user.id);
+
+            // Message éphémère à l'utilisateur
+            try {
+                await message.channel.send({
+                    content: `⚠️ ${message.author}, tu as reçu un avertissement automatique pour spam. Total : ${warnCount}`,
+                    ephemeral: true
+                });
+            } catch (_) {}
+
+            // Envoyer en DM la liste des messages de spam
+            try {
+                const spamList = spamMessages.map(m => `• ${m.content}`).join("\n") || "(aucun contenu)";
+                await message.author.send(
+                    `⚠️ Tu as été averti automatiquement pour spam. Voici la liste de tes messages supprimés :\n${spamList}`
+                );
+            } catch (_) {}
+
+            // Reset timestamps pour éviter spam infini
+            client._spamMap.set(userId, []);
+            client._warnCooldown.set(userId, now);
+        }
 
         const prefix = process.env.PREFIX;
         if (!prefix) {
@@ -18,20 +95,7 @@ module.exports = {
             return;
         }
 
-        // ————————————————————————————————
-        // Charger guildSettings / userSettings
-        // ————————————————————————————————
-        let guildSettings = await client.getGuild(message.guild).catch(() => null);
-        if (!guildSettings) {
-            await client.createGuild(message.guild);
-            guildSettings = await client.getGuild(message.guild);
-        }
-
-        let userSettings = await client.getUser(message.author).catch(() => null);
-        if (!userSettings) {
-            await client.createUser(message.author);
-            userSettings = await client.getUser(message.author);
-        }
+        // ...existing code...
 
         // ————————————————————————————————
         // Vérifier le prefix

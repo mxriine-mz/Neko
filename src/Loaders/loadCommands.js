@@ -1,6 +1,6 @@
 const { glob } = require("glob");
 const path = require("path");
-const Logger = require("../Loaders/Logger");
+const Logger = require("./Logger");
 const { Collection, ApplicationCommandType } = require("discord.js");
 
 module.exports = async (client) => {

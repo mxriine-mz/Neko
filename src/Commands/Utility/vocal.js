@@ -1,4 +1,4 @@
-const { PermissionFlagsBits } = require("discord.js");
+const { PermissionFlagsBits, MessageFlags } = require("discord.js");
 
 module.exports = {
   name: "vocal",
@@ -84,7 +84,7 @@ module.exports = {
     if (!channel)
       return interaction.reply({ 
         content: "Tu n'es pas dans un salon vocal oh !", 
-        ephemeral: true 
+        flags: MessageFlags.Ephemeral 
       });
 
     // Vérification propriétaire
@@ -92,7 +92,7 @@ module.exports = {
     if (!perms?.has(PermissionFlagsBits.ManageChannels))
       return interaction.reply({ 
         content: "Tchuuuiiip ! Ce n'est même pas ton salon.", 
-        ephemeral: true 
+        flags: MessageFlags.Ephemeral 
       });
 
     const sub = interaction.options.getSubcommand();
@@ -105,7 +105,7 @@ module.exports = {
       await channel.setName(`・ ${newName}`);
       return interaction.reply({
         content: "Nom du salon mis à jour ✨",
-        ephemeral: true
+        flags: MessageFlags.Ephemeral
       });
     }
 
@@ -117,7 +117,7 @@ module.exports = {
       await channel.setUserLimit(limit);
       return interaction.reply({
         content: `Limite d'utilisateur mise à **${limit}**.`,
-        ephemeral: true
+        flags: MessageFlags.Ephemeral
       });
     }
 
@@ -130,7 +130,7 @@ module.exports = {
       });
       return interaction.reply({
         content: "Salon verrouillé 🔒",
-        ephemeral: true
+        flags: MessageFlags.Ephemeral
       });
     }
 
@@ -143,7 +143,7 @@ module.exports = {
       });
       return interaction.reply({
         content: "Salon déverrouillé 🔓",
-        ephemeral: true
+        flags: MessageFlags.Ephemeral
       });
     }
 
@@ -157,13 +157,13 @@ module.exports = {
       if (!targetMember)
         return interaction.reply({
           content: "Ce membre n'est pas dans ton vocal…",
-          ephemeral: true
+          flags: MessageFlags.Ephemeral
         });
 
       await targetMember.voice.disconnect();
       return interaction.reply({
         content: `${user.username} a été expulsé 👋`,
-        ephemeral: true
+        flags: MessageFlags.Ephemeral
       });
     }
   }

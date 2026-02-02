@@ -14,7 +14,17 @@ const userSchema = mongoose.Schema({
     xp: { 'type': Number, 'default': 0 },
     rank : { 'type' : String, 'default': null },
     inGuild : { 'type': Boolean, 'default': false },
-    leftAt: { 'type': String, 'default': null }
+    leftAt: { 'type': String, 'default': null },
+    warnings: {
+        type: [
+            {
+                reason: { type: String, required: true },
+                date: { type: Date, default: Date.now },
+                moderator: { type: String, required: true }
+            }
+        ],
+        default: []
+    }
 });
 
 module.exports = mongoose.model('User', userSchema);
