@@ -5,7 +5,7 @@
     "login": "Log in"
   },
   "Hero": {
-    "badge": "v2.0 · Docker + PostgreSQL",
+    "badge": "v2.0 · Node + PostgreSQL",
     "titleBefore": "The",
     "titleHighlight": "Discord",
     "titleAfter": "bot for your server",
@@ -39,6 +39,45 @@
     "announcements": {
       "title": "Announcements",
       "description": "Role-targeted pings (mail, recruitment, giveaways, partnerships, events…)."
+    }
+  },
+  "FeatureDetails": {
+    "heading": "Dive into the features",
+    "moderation": {
+      "title": "Full moderation",
+      "description": "Keep your server clean and safe with a suite of moderation tools available in a single command.",
+      "points": [
+        "Ban, kick, timeout and channel cleanup in an instant",
+        "Built-in auto-moderation: anti-spam and anti-link",
+        "Warnings with per-member history"
+      ]
+    },
+    "leveling": {
+      "title": "Leveling system",
+      "description": "Reward your community's activity with a complete, customizable XP system.",
+      "points": [
+        "XP earned by chatting, adjustable multiplier",
+        "Rank cards and server leaderboard",
+        "Customizable level-up messages"
+      ]
+    },
+    "tickets": {
+      "title": "Support tickets",
+      "description": "Give your members private support in two clicks, without cluttering your channels.",
+      "points": [
+        "Opening panel with a dropdown menu",
+        "Open, close and reopen in one click",
+        "Dedicated log channel to keep a record"
+      ]
+    },
+    "games": {
+      "title": "Mini-games & fun",
+      "description": "Liven up your community with interactive games and fun reactions.",
+      "points": [
+        "Tic-Tac-Toe and Simon played with buttons",
+        "Hangman and random picker to decide",
+        "Anime reactions: hug, pat, slap and more"
+      ]
     }
   },
   "Steps": {

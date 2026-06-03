@@ -100,3 +100,19 @@ export function fetchGuildChannels(guildId: string): Promise<DiscordChannel[] | 
 export function fetchGuildRoles(guildId: string): Promise<DiscordRole[] | null> {
   return botFetch<DiscordRole[]>(`/guilds/${guildId}/roles`);
 }
+
+export type DiscordBotUser = { id: string; username: string; avatar: string | null };
+
+/** Récupère le compte du bot (nom + avatar). Mis en cache 1 h (change rarement). */
+export const getBotUser = unstable_cache(
+  () => botFetch<DiscordBotUser>('/users/@me'),
+  ['discord-bot-user'],
+  { revalidate: 3600 },
+);
+
+/** URL de l'avatar du bot (ou avatar Discord par défaut si aucun). */
+export function botAvatarUrl(user: DiscordBotUser, size = 128): string {
+  if (!user.avatar) return 'https://cdn.discordapp.com/embed/avatars/0.png';
+  const ext = user.avatar.startsWith('a_') ? 'gif' : 'png';
+  return `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.${ext}?size=${size}`;
+}

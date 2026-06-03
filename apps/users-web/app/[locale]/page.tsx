@@ -3,6 +3,7 @@ import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import Hero from '@/components/sections/Hero';
 import Features from '@/components/sections/Features';
+import FeatureBlocks from '@/components/sections/FeatureBlocks';
 import Steps from '@/components/sections/Steps';
 
 export default async function Home({
@@ -19,6 +20,7 @@ export default async function Home({
       <main className="flex-1">
         <Hero />
         <Features />
+        <FeatureBlocks />
         <Steps />
       </main>
       <Footer />

@@ -5,7 +5,7 @@
     "login": "Se connecter"
   },
   "Hero": {
-    "badge": "v2.0 · Docker + PostgreSQL",
+    "badge": "v2.0 · Node + PostgreSQL",
     "titleBefore": "Le bot",
     "titleHighlight": "Discord",
     "titleAfter": "pour ton serveur",
@@ -39,6 +39,45 @@
     "announcements": {
       "title": "Annonces",
       "description": "Ping ciblé par rôle (mails, recrutement, giveaways, partenariats, animations…)."
+    }
+  },
+  "FeatureDetails": {
+    "heading": "Plonge dans les fonctionnalités",
+    "moderation": {
+      "title": "Modération complète",
+      "description": "Garde ton serveur propre et sûr avec une suite d'outils de modération accessibles en une commande.",
+      "points": [
+        "Bannissement, kick, timeout et nettoyage de salon en un instant",
+        "Auto-modération intégrée : anti-spam et anti-liens",
+        "Avertissements avec historique consultable par membre"
+      ]
+    },
+    "leveling": {
+      "title": "Système de niveaux",
+      "description": "Récompense l'activité de ta communauté avec un système d'XP complet et personnalisable.",
+      "points": [
+        "XP gagné en discutant, multiplicateur réglable",
+        "Cartes de rang et classement du serveur",
+        "Messages de passage de niveau personnalisables"
+      ]
+    },
+    "tickets": {
+      "title": "Tickets de support",
+      "description": "Offre un support privé à tes membres en deux clics, sans encombrer tes salons.",
+      "points": [
+        "Panneau d'ouverture avec menu déroulant",
+        "Ouverture, fermeture et réouverture en un clic",
+        "Salon de logs dédié pour garder une trace"
+      ]
+    },
+    "games": {
+      "title": "Mini-jeux & fun",
+      "description": "Anime ta communauté avec des jeux interactifs et des réactions amusantes.",
+      "points": [
+        "Morpion et Simon jouables aux boutons",
+        "Pendu et choix aléatoire pour départager",
+        "Réactions anime : hug, pat, slap et bien plus"
+      ]
     }
   },
   "Steps": {

@@ -2,9 +2,16 @@
 
 import { useState, type ReactNode } from 'react';
 import { usePathname } from 'next/navigation';
-import { Menu } from 'lucide-react';
+import { signOut } from 'next-auth/react';
+import { Menu, LogOut } from 'lucide-react';
 import Sidebar from './Sidebar';
+import LocaleSwitcher from './ui/LocaleSwitcher';
 import { FeedbackProvider } from './ui/feedback';
+
+interface SessionUser {
+  name?: string | null;
+  image?: string | null;
+}
 
 const TITLES: Record<string, [string, string]> = {
   '/': ['Dashboard', 'Vue d’ensemble du bot et du système'],
@@ -19,7 +26,7 @@ function titleFor(pathname: string): [string, string] {
   return TITLES[pathname] ?? ['Neko', 'Administration'];
 }
 
-export default function AppShell({ children }: { children: ReactNode }) {
+export default function AppShell({ children, user }: { children: ReactNode; user?: SessionUser }) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
   const [title, sub] = titleFor(pathname);
@@ -56,6 +63,33 @@ export default function AppShell({ children }: { children: ReactNode }) {
             <div className="min-w-0">
               <h1 className="truncate text-[17px] font-bold">{title}</h1>
               <p className="truncate text-[12.5px] text-ink-3">{sub}</p>
+            </div>
+
+            <div className="ml-auto flex items-center gap-3">
+              {user?.image && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={user.image}
+                  alt=""
+                  width={28}
+                  height={28}
+                  className="size-7 rounded-full border border-white/10"
+                />
+              )}
+              {user?.name && (
+                <span className="hidden text-[13px] font-medium text-ink-2 sm:inline">
+                  {user.name}
+                </span>
+              )}
+              <button
+                onClick={() => signOut({ redirectTo: '/login' })}
+                className="inline-flex items-center gap-1.5 rounded-full bg-white/[0.05] px-3 py-1.5 text-[12.5px] font-medium text-ink-2 transition hover:bg-white/[0.1] hover:text-ink"
+              >
+                <LogOut className="size-4" />
+                <span className="hidden sm:inline">Déconnexion</span>
+              </button>
+              <span className="mx-0.5 hidden h-5 w-px bg-white/10 sm:block" />
+              <LocaleSwitcher />
             </div>
           </header>
 
