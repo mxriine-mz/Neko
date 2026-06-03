@@ -1,0 +1,125 @@
+// Schéma de la base du BOT Discord (neko_db).
+// LECTURE/écriture de données uniquement — ne JAMAIS lancer `migrate` ici :
+// le bot est seul maître de ce schéma. On ne fait que `prisma generate`.
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../../lib/generated/bot"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Guild {
+  id        String   @id
+  name      String
+  prefix    String   @default("!")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  logsEnabled    Boolean @default(false)
+  logsChannel    String?
+  logsMessages   Boolean @default(false)
+  logsModeration Boolean @default(false)
+  logsJoins      Boolean @default(false)
+  logsLeaves     Boolean @default(false)
+  logsRoles      Boolean @default(false)
+  logsChannels   Boolean @default(false)
+  logsBans       Boolean @default(false)
+  logsBoosts     Boolean @default(false)
+
+  welcomeEnabled Boolean @default(false)
+  welcomeChannel String?
+  welcomeMessage String  @default("Bienvenue {user} 👋")
+  welcomeImage   String?
+
+  byeEnabled Boolean @default(false)
+  byeChannel String?
+  byeMessage String  @default("{user} nous a quitté… 😢")
+  byeImage   String?
+
+  announcesEnabled Boolean @default(false)
+  announcesChannel String?
+
+  ticketEnabled     Boolean @default(false)
+  ticketChannel     String?
+  ticketCategory    String?
+  ticketMessage     String?
+  ticketRoleSupport String?
+  ticketLogs        String?
+
+  levelEnabled    Boolean @default(false)
+  levelChannel    String?
+  levelMessage    String  @default("🎉 Bravo {user} ! Tu passes au niveau {level} !")
+  levelMultiplier Float   @default(1.0)
+
+  modEnabled     Boolean @default(false)
+  modRole        String?
+  modLogChannel  String?
+  modLogThread   String?
+  autoModEnabled Boolean @default(false)
+  antiSpam       Boolean @default(false)
+  antiLink       Boolean @default(false)
+
+  autoRoleEnabled Boolean @default(false)
+  autoRoleId      String?
+
+  birthdayEnabled Boolean @default(false)
+  birthdayChannel String?
+  birthdayMessage String  @default("🎉 Joyeux anniversaire {user} ! Tu as maintenant {age} ans ! 🎂")
+
+  users User[]
+
+  @@map("guilds")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  discordId String
+  username  String
+  guildId   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  birthday                String?
+  lastBirthdayMessageSent DateTime?
+
+  hasTicket       Boolean @default(false)
+  ticketMessageId String?
+  ticketReason    String?
+
+  level     Int     @default(0)
+  xp        Int     @default(0)
+  nextLevel Int     @default(300)
+  rank      String?
+
+  inGuild Boolean   @default(true)
+  leftAt  DateTime?
+
+  isBanned  Boolean   @default(false)
+  bannedAt  DateTime?
+  banReason String?
+
+  warnings Warning[]
+  guild    Guild     @relation(fields: [guildId], references: [id], onDelete: Cascade)
+
+  @@unique([discordId, guildId])
+  @@index([guildId])
+  @@index([discordId])
+  @@map("users")
+}
+
+model Warning {
+  id        String   @id @default(uuid())
+  userId    String
+  reason    String
+  moderator String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("warnings")
+}

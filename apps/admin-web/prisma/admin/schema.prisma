@@ -1,0 +1,101 @@
+// Schéma de la base ADMIN (neko_admin) — propriété de ce projet.
+// Notes (sections + notes) et Planner (colonnes + tâches + sous-tâches).
+// C'est ici qu'on lance les migrations.
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../../lib/generated/admin"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("ADMIN_DATABASE_URL")
+}
+
+// ── Notes (style Microsoft Notes) ──
+model Section {
+  id        String   @id @default(cuid())
+  name      String
+  position  Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  notes     Note[]
+
+  @@map("sections")
+}
+
+model Note {
+  id        String   @id @default(cuid())
+  title     String   @default("Sans titre")
+  content   String   @default("") @db.Text
+  position  Int      @default(0)
+  sectionId String
+  section   Section  @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([sectionId])
+  @@map("notes")
+}
+
+// ── Planner (Kanban + Gantt) ──
+model Planner {
+  id        String        @id @default(cuid())
+  name      String
+  position  Int           @default(0)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  columns   BoardColumn[]
+  tasks     Task[]
+
+  @@map("planners")
+}
+
+model BoardColumn {
+  id        String   @id @default(cuid())
+  name      String
+  position  Int      @default(0)
+  plannerId String
+  planner   Planner  @relation(fields: [plannerId], references: [id], onDelete: Cascade)
+  tasks     Task[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([plannerId])
+  @@map("columns")
+}
+
+model Task {
+  id          String      @id @default(cuid())
+  title       String      @default("Sans titre")
+  description String      @default("") @db.Text
+  assignee    String?
+  tags        String[]    @default([])
+  start       String? // date 'YYYY-MM-DD'
+  end         String? // date 'YYYY-MM-DD'
+  position    Int         @default(0)
+  plannerId   String
+  planner     Planner     @relation(fields: [plannerId], references: [id], onDelete: Cascade)
+  columnId    String
+  column      BoardColumn @relation(fields: [columnId], references: [id], onDelete: Cascade)
+  subtasks    Subtask[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@index([plannerId])
+  @@index([columnId])
+  @@map("tasks")
+}
+
+model Subtask {
+  id        String   @id @default(cuid())
+  text      String
+  done      Boolean  @default(false)
+  position  Int      @default(0)
+  taskId    String
+  task      Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@index([taskId])
+  @@map("subtasks")
+}
