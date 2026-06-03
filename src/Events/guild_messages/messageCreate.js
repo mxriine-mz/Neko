@@ -355,7 +355,9 @@ module.exports = {
             console.error('[XP] Stack:', error.stack);
         }
 
-        const prefix = process.env.PREFIX || "!";
+        // Préfixe lu depuis la DB (modifiable via dashboard / commande prefix),
+        // avec repli sur la valeur du .env puis "!" pour les nouveaux serveurs.
+        const prefix = guildSettings?.prefix || process.env.PREFIX || "!";
         if (!message.content.startsWith(prefix)) return;
 
         const args = message.content.slice(prefix.length).trim().split(/ +/g);

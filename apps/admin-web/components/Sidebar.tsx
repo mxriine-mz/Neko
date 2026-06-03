@@ -2,12 +2,14 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { signOut } from 'next-auth/react';
 import {
   LayoutDashboard,
   Server,
   Users,
   StickyNote,
   KanbanSquare,
+  LogOut,
   type LucideIcon,
 } from 'lucide-react';
 
@@ -84,6 +86,14 @@ export default function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
           })}
         </div>
       ))}
+
+      <button
+        onClick={() => signOut({ redirectTo: '/login' })}
+        className="mt-auto flex items-center gap-3 rounded-[10px] px-2.5 py-2 text-[13.5px] font-medium text-ink-2 transition hover:bg-danger/[0.1] hover:text-danger"
+      >
+        <LogOut className="size-[18px]" strokeWidth={2} />
+        Déconnexion
+      </button>
     </nav>
   );
 }

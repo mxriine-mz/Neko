@@ -48,6 +48,8 @@ module.exports = {
   // ————————————————————————————————————————
   run: async (message, client, args) => {
     const query = args[0]?.toLowerCase() || null;
+    // Préfixe du serveur depuis la DB (repli .env puis "!").
+    const guildSettings = await client.getGuild(message.guild.id, message.guild.name);
 
     // Si l'utilisateur demande une commande spécifique
     if (query) {
@@ -133,6 +135,9 @@ module.exports = {
   // ————————————————————————————————————————
   runSlash: async (client, interaction) => {
     const query = interaction.options.getString("commande");
+    // Préfixe du serveur depuis la DB (repli .env puis "!").
+    const guildSettings = await client.getGuild(interaction.guild.id, interaction.guild.name);
+    const prefix = guildSettings?.prefix || process.env.PREFIX || "!";
 
     // Si l'utilisateur demande une commande spécifique
     if (query) {
@@ -157,7 +162,7 @@ module.exports = {
           {
             name: "Utilisation Prefix",
             value: cmd.usage
-              ? `\`\`\`!${cmd.usage}\`\`\``
+              ? `\`\`\`${prefix}${cmd.usage}\`\`\``
               : "`Pas de version prefix.`"
           },
           {
@@ -172,7 +177,7 @@ module.exports = {
       if (cmd.examples) {
         embed.addFields({
           name: "Exemples",
-          value: `\`\`\`${cmd.examples.map(x => `!${x}`).join("\n")}\`\`\``
+          value: `\`\`\`${cmd.examples.map(x => `${prefix}${x}`).join("\n")}\`\`\``
         });
       }
 
@@ -196,7 +201,7 @@ module.exports = {
       .setTitle("📚 Menu d'aide")
       .setDescription(
         "Utilisez `/help <commande>` pour plus d'informations sur une commande.\n" +
-        "Ou utilisez `!help <commande>` en prefix."
+        `Ou utilisez \`${prefix}help <commande>\` en prefix.`
       )
       .setColor(0x202225)
       .setThumbnail(client.user.displayAvatarURL({ dynamic: true }));

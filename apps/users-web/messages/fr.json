@@ -1,0 +1,153 @@
+{
+  "Nav": {
+    "features": "Fonctionnalités",
+    "dashboard": "Dashboard",
+    "login": "Se connecter"
+  },
+  "Hero": {
+    "badge": "v2.0 · Docker + PostgreSQL",
+    "titleBefore": "Le bot",
+    "titleHighlight": "Discord",
+    "titleAfter": "pour ton serveur",
+    "subtitle": "Moderation, leveling, tickets, mini-jeux et bien plus. Tout ce dont tu as besoin, dans un seul bot.",
+    "invite": "Ajouter à mon serveur",
+    "manageServers": "Gérer mes serveurs",
+    "socialProof": "Déjà adopté par des communautés Discord."
+  },
+  "Features": {
+    "heading": "Tout ce qu'il te faut",
+    "moderation": {
+      "title": "Moderation",
+      "description": "Warnings, bans, automod, timeout, kick, clear — tout ce qu'il faut pour garder ton serveur clean."
+    },
+    "leveling": {
+      "title": "Leveling",
+      "description": "Système XP complet avec ranks, classements et récompenses par palier."
+    },
+    "tickets": {
+      "title": "Tickets",
+      "description": "Support privé en deux clics avec menus déroulants et fermeture auto."
+    },
+    "games": {
+      "title": "Mini-jeux",
+      "description": "Morpion, Simon, Pendu — engage ta commu avec des jeux intégrés."
+    },
+    "birthdays": {
+      "title": "Anniversaires",
+      "description": "Le bot souhaite automatiquement les anniversaires de tes membres."
+    },
+    "announcements": {
+      "title": "Annonces",
+      "description": "Ping ciblé par rôle (mails, recrutement, giveaways, partenariats, animations…)."
+    }
+  },
+  "Steps": {
+    "heading": "Démarre en 3 étapes",
+    "invite": {
+      "title": "Invite Neko",
+      "description": "Ajoute le bot à ton serveur en un clic."
+    },
+    "signin": {
+      "title": "Connecte-toi",
+      "description": "Identifie-toi avec Discord sur le dashboard."
+    },
+    "configure": {
+      "title": "Configure",
+      "description": "Active et règle chaque module à ta sauce."
+    }
+  },
+  "Footer": {
+    "copyright": "© {year} Neko · Made with ♥"
+  },
+  "LocaleSwitcher": {
+    "label": "Langue",
+    "fr": "Français",
+    "en": "English"
+  },
+  "Dashboard": {
+    "title": "Dashboard",
+    "signOut": "Déconnexion",
+    "serverError": "Oups, un problème est survenu",
+    "serverErrorHint": "Le chargement a échoué (Discord est peut-être momentanément indisponible). Réessaie dans un instant.",
+    "reload": "Recharger",
+    "save": "Enregistrer",
+    "saving": "Enregistrement…",
+    "saved": "Enregistré",
+    "dangerZone": "Zone de danger",
+    "resetConfig": "Réinitialiser la configuration",
+    "resetConfigHint": "Désactive tous les modules et efface les salons/rôles configurés. Les niveaux et avertissements des membres sont conservés.",
+    "confirmReset": "Réinitialiser la configuration ?",
+    "resetYes": "Oui, réinitialiser",
+    "delete": "Tout supprimer",
+    "deleteHint": "Supprime définitivement la ligne du serveur ET les niveaux/avertissements de tous les membres (cascade).",
+    "confirmDelete": "Confirmer la suppression définitive ?",
+    "deleteYes": "Oui, tout supprimer",
+    "cancel": "Annuler",
+    "back": "Retour aux serveurs",
+    "configSubtitle": "Configuration du serveur",
+    "serversTitle": "Tes serveurs",
+    "serversSubtitle": "Sélectionne un serveur à configurer, ou invite Neko là où il manque.",
+    "noServers": "Aucun serveur où tu es administrateur.",
+    "configure": "Configurer",
+    "invite": "Inviter",
+    "loadError": "Impossible de charger tes serveurs. Reconnecte-toi et réessaie.",
+    "noBotToken": "Sélecteurs de salons/rôles indisponibles (token du bot non configuré côté site). Saisis les identifiants Discord à la main pour l'instant.",
+    "modules": {
+      "general": { "title": "Général", "description": "Préfixe des commandes texte." },
+      "welcome": { "title": "Bienvenue", "description": "Accueille les nouveaux membres." },
+      "bye": { "title": "Au revoir", "description": "Message quand un membre quitte." },
+      "levels": { "title": "Niveaux", "description": "Système d'XP et de niveaux." },
+      "moderation": { "title": "Modération", "description": "Rôle modérateur, logs et auto-modération." },
+      "tickets": { "title": "Tickets", "description": "Support privé par tickets." },
+      "birthdays": { "title": "Anniversaires", "description": "Souhaite les anniversaires des membres." },
+      "announces": { "title": "Annonces", "description": "Salon dédié aux annonces." },
+      "autorole": { "title": "Rôle automatique", "description": "Rôle attribué à l'arrivée." },
+      "logs": { "title": "Logs", "description": "Journalisation des événements du serveur." }
+    },
+    "fields": {
+      "prefix": "Préfixe",
+      "welcomeEnabled": "Activer",
+      "welcomeChannel": "Salon",
+      "welcomeMessage": "Message",
+      "welcomeImage": "Image (URL)",
+      "byeEnabled": "Activer",
+      "byeChannel": "Salon",
+      "byeMessage": "Message",
+      "byeImage": "Image (URL)",
+      "levelEnabled": "Activer",
+      "levelChannel": "Salon d'annonce",
+      "levelMessage": "Message de niveau",
+      "levelMultiplier": "Multiplicateur d'XP",
+      "modEnabled": "Activer",
+      "modRole": "Rôle modérateur",
+      "modLogChannel": "Salon des logs",
+      "modLogThread": "ID du thread de logs",
+      "autoModEnabled": "Auto-modération",
+      "antiSpam": "Anti-spam",
+      "antiLink": "Anti-liens",
+      "ticketEnabled": "Activer",
+      "ticketChannel": "Salon du panneau",
+      "ticketCategory": "Catégorie des tickets",
+      "ticketMessage": "Message du panneau",
+      "ticketRoleSupport": "Rôle support",
+      "ticketLogs": "Salon des logs",
+      "birthdayEnabled": "Activer",
+      "birthdayChannel": "Salon",
+      "birthdayMessage": "Message",
+      "announcesEnabled": "Activer",
+      "announcesChannel": "Salon des annonces",
+      "autoRoleEnabled": "Activer",
+      "autoRoleId": "Rôle automatique",
+      "logsEnabled": "Activer",
+      "logsChannel": "Salon des logs",
+      "logsMessages": "Messages",
+      "logsModeration": "Modération",
+      "logsJoins": "Arrivées",
+      "logsLeaves": "Départs",
+      "logsRoles": "Rôles",
+      "logsChannels": "Salons",
+      "logsBans": "Bannissements",
+      "logsBoosts": "Boosts"
+    }
+  }
+}

@@ -10,13 +10,13 @@
     "prisma:migrate": "prisma migrate dev --schema=./config/prisma/schema.prisma",
     "prisma:deploy": "prisma migrate deploy --schema=./config/prisma/schema.prisma",
     "prisma:studio": "prisma studio --schema=./config/prisma/schema.prisma",
-    "docker:build": "cd config/docker && docker-compose build",
-    "docker:up": "cd config/docker && docker-compose up -d",
-    "docker:down": "cd config/docker && docker-compose down",
-    "docker:logs": "cd config/docker && docker-compose logs -f bot",
-    "docker:restart": "cd config/docker && docker-compose restart bot",
-    "docker:dev": "cd config/docker && docker-compose -f docker-compose.dev.yml up -d",
-    "docker:dev-down": "cd config/docker && docker-compose -f docker-compose.dev.yml down"
+    "docker:build": "cd config/docker && docker compose --env-file ../../.env build",
+    "docker:up": "cd config/docker && docker compose --env-file ../../.env up -d",
+    "docker:down": "cd config/docker && docker compose --env-file ../../.env down",
+    "docker:logs": "cd config/docker && docker compose --env-file ../../.env logs -f bot",
+    "docker:restart": "cd config/docker && docker compose --env-file ../../.env restart bot",
+    "docker:dev": "cd config/docker && docker compose --env-file ../../.env -f docker-compose.dev.yml up -d",
+    "docker:dev-down": "cd config/docker && docker compose --env-file ../../.env -f docker-compose.dev.yml down"
   },
   "keywords": [
     "discord",

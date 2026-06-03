@@ -27,6 +27,7 @@ module.exports = {
   // ————————————————————————————————————————
   run: async (message, client, args) => {
     const value = args[0];
+    const guildSettings = await client.getGuild(message.guild.id, message.guild.name);
 
     if (value) {
       await client.updateGuild(guildSettings.id, { prefix: value });

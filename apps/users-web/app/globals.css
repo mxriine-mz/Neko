@@ -1,0 +1,29 @@
+@import "tailwindcss";
+
+/* ───────────────────────────────────────────────────────────────────────────
+   Design tokens — thème dark unique (cohérent avec la landing).
+   Exposés à Tailwind v4 via @theme : utilisables en `bg-background`,
+   `text-foreground`, `text-brand`, `font-sans`, etc.
+─────────────────────────────────────────────────────────────────────────── */
+@theme {
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+
+  --color-background: #09090b; /* zinc-950 */
+  --color-foreground: #f4f4f5; /* zinc-100 */
+  --color-muted: #a1a1aa; /* zinc-400 */
+
+  /* Couleur de marque (dégradé sky → blue) */
+  --color-brand: #38bdf8; /* sky-400 */
+  --color-brand-strong: #3b82f6; /* blue-500 */
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  background: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-sans);
+}

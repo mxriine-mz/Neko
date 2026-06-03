@@ -1,5 +1,5 @@
 const Logger = require('../../Loaders/Logger');
-const { REST, Routes } = require('discord.js');
+const { REST, Routes, ActivityType } = require('discord.js');
 const { startBirthdaySystem } = require('../../Assets/Functions/BirthdaySystem');
 
 module.exports = {
@@ -7,6 +7,11 @@ module.exports = {
     once: true,
     async execute(client) {
         Logger.client(`✔ Connecté en tant que ${client.user.tag}`);
+
+        client.user.setPresence({
+            activities: [{ name: '/help - neko.gg - ^.^', type: ActivityType.Custom }],
+            status: 'online'
+        });
         
         // Enregistrer les slash commands
         const commands = Array.from(client.commands.values())

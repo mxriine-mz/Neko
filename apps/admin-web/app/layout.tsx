@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 import './globals.css';
-import AppShell from '@/components/AppShell';
 
 export const metadata: Metadata = {
   title: 'Neko — Administration',
@@ -18,9 +17,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           rel="stylesheet"
         />
       </head>
-      <body>
-        <AppShell>{children}</AppShell>
-      </body>
+      <body>{children}</body>
     </html>
   );
 }

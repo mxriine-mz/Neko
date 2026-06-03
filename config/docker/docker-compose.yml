@@ -5,17 +5,18 @@ services:
     container_name: neko-postgres
     restart: unless-stopped
     environment:
-      POSTGRES_USER: ${DB_USER:-neko}
-      POSTGRES_PASSWORD: ${DB_PASSWORD:-neko_password}
-      POSTGRES_DB: ${DB_NAME:-nekodb}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
     ports:
-      - "${DB_PORT:-5432}:5432"
+      # Bind sur 127.0.0.1 uniquement : accessible depuis l'hôte (web-viewer natif, tunnel SSH), pas public
+      - "127.0.0.1:${DB_PORT:-5432}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - neko-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-neko}"]
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -35,11 +36,7 @@ services:
     environment:
       NODE_ENV: production
       DB_HOST: postgres
-      DB_PORT: 5432
-      DB_USER: neko
-      DB_PASSWORD: neko_password
-      DB_NAME: nekodb
-      DATABASE_URL: postgresql://neko:neko_password@postgres:5432/nekodb?schema=public
+      DATABASE_URL: ${DATABASE_URL_DOCKER}
     volumes:
       - ../../src:/app/src
       - ../../config:/app/config

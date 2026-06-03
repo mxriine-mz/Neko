@@ -1,0 +1,153 @@
+{
+  "Nav": {
+    "features": "Features",
+    "dashboard": "Dashboard",
+    "login": "Log in"
+  },
+  "Hero": {
+    "badge": "v2.0 · Docker + PostgreSQL",
+    "titleBefore": "The",
+    "titleHighlight": "Discord",
+    "titleAfter": "bot for your server",
+    "subtitle": "Moderation, leveling, tickets, mini-games and more. Everything you need in a single bot.",
+    "invite": "Add to my server",
+    "manageServers": "Manage servers",
+    "socialProof": "Already trusted by Discord communities."
+  },
+  "Features": {
+    "heading": "Everything you need",
+    "moderation": {
+      "title": "Moderation",
+      "description": "Warnings, bans, automod, timeout, kick, clear — everything to keep your server clean."
+    },
+    "leveling": {
+      "title": "Leveling",
+      "description": "Full XP system with ranks, leaderboards and tiered rewards."
+    },
+    "tickets": {
+      "title": "Tickets",
+      "description": "Private support in two clicks with dropdown menus and auto-close."
+    },
+    "games": {
+      "title": "Mini-games",
+      "description": "Tic-Tac-Toe, Simon, Hangman — engage your community with built-in games."
+    },
+    "birthdays": {
+      "title": "Birthdays",
+      "description": "The bot automatically wishes your members a happy birthday."
+    },
+    "announcements": {
+      "title": "Announcements",
+      "description": "Role-targeted pings (mail, recruitment, giveaways, partnerships, events…)."
+    }
+  },
+  "Steps": {
+    "heading": "Get started in 3 steps",
+    "invite": {
+      "title": "Invite Neko",
+      "description": "Add the bot to your server in one click."
+    },
+    "signin": {
+      "title": "Sign in",
+      "description": "Log in with Discord on the dashboard."
+    },
+    "configure": {
+      "title": "Configure",
+      "description": "Enable and tune each module your way."
+    }
+  },
+  "Footer": {
+    "copyright": "© {year} Neko · Made with ♥"
+  },
+  "LocaleSwitcher": {
+    "label": "Language",
+    "fr": "Français",
+    "en": "English"
+  },
+  "Dashboard": {
+    "title": "Dashboard",
+    "signOut": "Sign out",
+    "serverError": "Oops, something went wrong",
+    "serverErrorHint": "Loading failed (Discord may be temporarily unavailable). Try again in a moment.",
+    "reload": "Reload",
+    "save": "Save",
+    "saving": "Saving…",
+    "saved": "Saved",
+    "dangerZone": "Danger zone",
+    "resetConfig": "Reset configuration",
+    "resetConfigHint": "Disables all modules and clears configured channels/roles. Member levels and warnings are kept.",
+    "confirmReset": "Reset the configuration?",
+    "resetYes": "Yes, reset",
+    "delete": "Delete everything",
+    "deleteHint": "Permanently deletes the server row AND every member's levels/warnings (cascade).",
+    "confirmDelete": "Confirm permanent deletion?",
+    "deleteYes": "Yes, delete all",
+    "cancel": "Cancel",
+    "back": "Back to servers",
+    "configSubtitle": "Server configuration",
+    "serversTitle": "Your servers",
+    "serversSubtitle": "Pick a server to configure, or invite Neko where it's missing.",
+    "noServers": "No server where you are an administrator.",
+    "configure": "Configure",
+    "invite": "Invite",
+    "loadError": "Couldn't load your servers. Sign in again and retry.",
+    "noBotToken": "Channel/role pickers are unavailable (bot token not configured on the site). Enter Discord IDs manually for now.",
+    "modules": {
+      "general": { "title": "General", "description": "Text command prefix." },
+      "welcome": { "title": "Welcome", "description": "Greet new members." },
+      "bye": { "title": "Goodbye", "description": "Message when a member leaves." },
+      "levels": { "title": "Levels", "description": "XP and leveling system." },
+      "moderation": { "title": "Moderation", "description": "Mod role, logs and auto-moderation." },
+      "tickets": { "title": "Tickets", "description": "Private ticket-based support." },
+      "birthdays": { "title": "Birthdays", "description": "Wish members a happy birthday." },
+      "announces": { "title": "Announcements", "description": "Dedicated announcements channel." },
+      "autorole": { "title": "Auto role", "description": "Role granted on join." },
+      "logs": { "title": "Logs", "description": "Log server events." }
+    },
+    "fields": {
+      "prefix": "Prefix",
+      "welcomeEnabled": "Enable",
+      "welcomeChannel": "Channel",
+      "welcomeMessage": "Message",
+      "welcomeImage": "Image (URL)",
+      "byeEnabled": "Enable",
+      "byeChannel": "Channel",
+      "byeMessage": "Message",
+      "byeImage": "Image (URL)",
+      "levelEnabled": "Enable",
+      "levelChannel": "Announcement channel",
+      "levelMessage": "Level-up message",
+      "levelMultiplier": "XP multiplier",
+      "modEnabled": "Enable",
+      "modRole": "Moderator role",
+      "modLogChannel": "Log channel",
+      "modLogThread": "Log thread ID",
+      "autoModEnabled": "Auto-moderation",
+      "antiSpam": "Anti-spam",
+      "antiLink": "Anti-link",
+      "ticketEnabled": "Enable",
+      "ticketChannel": "Panel channel",
+      "ticketCategory": "Tickets category",
+      "ticketMessage": "Panel message",
+      "ticketRoleSupport": "Support role",
+      "ticketLogs": "Log channel",
+      "birthdayEnabled": "Enable",
+      "birthdayChannel": "Channel",
+      "birthdayMessage": "Message",
+      "announcesEnabled": "Enable",
+      "announcesChannel": "Announcements channel",
+      "autoRoleEnabled": "Enable",
+      "autoRoleId": "Auto role",
+      "logsEnabled": "Enable",
+      "logsChannel": "Log channel",
+      "logsMessages": "Messages",
+      "logsModeration": "Moderation",
+      "logsJoins": "Joins",
+      "logsLeaves": "Leaves",
+      "logsRoles": "Roles",
+      "logsChannels": "Channels",
+      "logsBans": "Bans",
+      "logsBoosts": "Boosts"
+    }
+  }
+}

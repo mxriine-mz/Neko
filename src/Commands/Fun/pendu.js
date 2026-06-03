@@ -87,10 +87,18 @@ module.exports = {
         await handleGuess(client, interaction, gameKey, letter, message, collector);
       });
 
-      collector.on('end', () => {
-        const game = activeGames.get(gameKey);
-        if (game) {
-          activeGames.delete(gameKey);
+      collector.on('end', async (collected) => {
+        activeGames.delete(gameKey);
+
+        if (collected.size === 0) return;
+        try {
+          if (collected.size > 1) {
+            await interaction.channel.bulkDelete(collected, true);
+          } else {
+            await collected.first().delete();
+          }
+        } catch (_) {
+          // Permissions manquantes ou messages > 14j : on ignore
         }
       });
 

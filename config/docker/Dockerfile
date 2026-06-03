@@ -16,15 +16,15 @@ RUN apk add --no-cache \
 # Créer le répertoire de l'application
 WORKDIR /app
 
-# Copier les fichiers de dépendances
-COPY ../../package*.json ./
-COPY ../../config/prisma ./config/prisma/
+# Copier les fichiers de dépendances (chemins relatifs au build context = racine projet)
+COPY package*.json ./
+COPY config/prisma ./config/prisma/
 
-# Installer les dépendances
-RUN npm ci --only=production
+# Installer toutes les dépendances (nodemon et prisma CLI sont requis par la commande compose)
+RUN npm install
 
 # Copier le reste du code
-COPY ../.. .
+COPY . .
 
 # Générer le client Prisma
 RUN npx prisma generate --schema=./config/prisma/schema.prisma
@@ -32,5 +32,5 @@ RUN npx prisma generate --schema=./config/prisma/schema.prisma
 # Exposer le port (optionnel pour monitoring)
 EXPOSE 3000
 
-# Commande de démarrage
+# Commande de démarrage (surchargée par docker-compose)
 CMD ["npm", "start"]

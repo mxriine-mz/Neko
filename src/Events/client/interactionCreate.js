@@ -76,9 +76,13 @@ module.exports = {
 
     // BUTTONS
     if (interaction.isButton()) {
-      // Extraire le nom du bouton (avant le ":" si présent)
-      const buttonName = interaction.customId.split(':')[0];
-      const button = client.buttons.get(buttonName);
+      // Extraire le nom du bouton : essaie "name:args" puis "name_args"
+      let buttonName = interaction.customId.split(':')[0];
+      let button = client.buttons.get(buttonName);
+      if (!button) {
+        buttonName = interaction.customId.split('_')[0];
+        button = client.buttons.get(buttonName);
+      }
       if (button && typeof button.execute === "function") {
         try {
           await button.execute(client, interaction);
