@@ -238,4 +238,7 @@ Prisma, Docker et une architecture en monorepo.
 
 ## Licence
 
-ISC
+Tous droits réservés. Ce dépôt est public à des fins de consultation et de
+démonstration uniquement. Aucune réutilisation, copie, modification ou
+redistribution n'est autorisée sans accord écrit préalable. Voir le fichier
+[LICENSE](LICENSE) pour les conditions complètes.

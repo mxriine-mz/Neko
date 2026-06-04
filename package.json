@@ -2,6 +2,7 @@
   "name": "neko2.0",
   "version": "2.0.0",
   "description": "Bot Discord Neko - Version 2.0 avec Docker et PostgreSQL",
+  "private": true,
   "main": "main.js",
   "scripts": {
     "start": "node main.js",
@@ -26,8 +27,8 @@
     "prisma",
     "docker"
   ],
-  "author": "Ma'",
-  "license": "ISC",
+  "author": "ZelPhyris",
+  "license": "UNLICENSED",
   "dependencies": {
     "@napi-rs/canvas": "^0.1.41",
     "@prisma/client": "^5.9.0",
