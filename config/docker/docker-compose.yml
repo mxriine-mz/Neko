@@ -44,7 +44,7 @@ services:
       - ../../logs:/app/logs
     networks:
       - neko-network
-    command: sh -c "npx prisma migrate deploy --schema=./config/prisma/schema.prisma && npm run dev"
+    command: sh -c "npx prisma migrate deploy --schema=./config/prisma/schema.prisma && npm start"
 
 volumes:
   postgres_data:
