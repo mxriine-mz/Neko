@@ -9,7 +9,7 @@ module.exports = {
         Logger.client(`✔ Connecté en tant que ${client.user.tag}`);
 
         client.user.setPresence({
-            activities: [{ name: '/help - neko.gg - ^.^', type: ActivityType.Custom }],
+            activities: [{ name: 'Custom Status', state: '/help - neko.gg - ^.^', type: ActivityType.Custom }],
             status: 'online'
         });
         
