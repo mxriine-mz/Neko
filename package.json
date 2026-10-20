@@ -27,7 +27,7 @@
     "prisma",
     "docker"
   ],
-  "author": "ZelPhyris",
+  "author": "Marine Mazou",
   "license": "UNLICENSED",
   "dependencies": {
     "@napi-rs/canvas": "^0.1.41",

@@ -14,7 +14,7 @@ proposer une contribution.
 ## Mettre en place l'environnement
 
 ```bash
-git clone git@github.com:ZelPhyris/Neko.git
+git clone git@github.com:mxriine-mz/Neko.git
 cd Neko
 npm install
 npm run prisma:generate

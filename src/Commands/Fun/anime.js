@@ -151,7 +151,7 @@ module.exports = {
       (ctx.guild ? ctx.guild.members.cache.get(sender.id) : null); // prefix
 
     const senderDisplay =
-      guildMember?.displayName || // pseudo serveur (ZelPhy)
+      guildMember?.displayName || // pseudo serveur
       sender.globalName ||        // nom global
       sender.username;            // fallback
 

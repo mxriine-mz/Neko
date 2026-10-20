@@ -54,7 +54,7 @@ Neko/
 ## Installation
 
 ```bash
-git clone git@github.com:ZelPhyris/Neko.git
+git clone git@github.com:mxriine-mz/Neko.git
 cd Neko
 npm install
 ```
