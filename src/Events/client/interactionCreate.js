@@ -74,6 +74,52 @@ module.exports = {
       }
     }
 
+    // CONTEXT MENU COMMANDS (message / utilisateur)
+    if (interaction.isMessageContextMenuCommand() || interaction.isUserContextMenuCommand()) {
+      const cmd = client.commands.get(interaction.commandName);
+      if (!cmd) {
+        return interaction.reply({
+          content: "Cette commande n'existe pas !",
+          flags: MessageFlags.Ephemeral
+        });
+      }
+
+      // Owner only
+      if (cmd.ownerOnly && interaction.user.id !== process.env.OWNER_ID) {
+        return interaction.reply({
+          content: "Seul le propriétaire du bot peut utiliser cette commande.",
+          flags: MessageFlags.Ephemeral
+        });
+      }
+
+      // Permissions
+      if (cmd.permissions && !interaction.member.permissions.has(cmd.permissions)) {
+        return interaction.reply({
+          content: "Vous n'avez pas les permissions nécessaires.",
+          flags: MessageFlags.Ephemeral
+        });
+      }
+
+      try {
+        if (typeof cmd.execute === "function") {
+          await cmd.execute(client, interaction);
+        } else if (typeof cmd.runSlash === "function") {
+          await cmd.runSlash(client, interaction);
+        }
+      } catch (error) {
+        Logger.error(`Erreur dans la commande ${cmd.name}: ${error.message}`);
+        console.error(error);
+
+        const errorMsg = { content: "Une erreur s'est produite.", flags: MessageFlags.Ephemeral };
+        if (interaction.replied || interaction.deferred) {
+          await interaction.followUp(errorMsg).catch(() => {});
+        } else {
+          await interaction.reply(errorMsg).catch(() => {});
+        }
+      }
+      return;
+    }
+
     // BUTTONS
     if (interaction.isButton()) {
       // Extraire le nom du bouton : essaie "name:args" puis "name_args"
@@ -93,9 +139,15 @@ module.exports = {
       }
     }
 
-    // SELECT MENUS
-    if (interaction.isStringSelectMenu()) {
-      const select = client.selects.get(interaction.customId);
+    // SELECT MENUS (string ou salon)
+    if (interaction.isStringSelectMenu() || interaction.isChannelSelectMenu()) {
+      // Extraire le nom du menu : essaie "name:args" puis "name_args", puis le customId complet
+      let selectName = interaction.customId.split(':')[0];
+      let select = client.selects.get(selectName);
+      if (!select) {
+        selectName = interaction.customId.split('_')[0];
+        select = client.selects.get(selectName);
+      }
       if (select && typeof select.execute === "function") {
         try {
           await select.execute(client, interaction);

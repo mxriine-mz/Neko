@@ -33,12 +33,14 @@ module.exports = async (client) => {
                 // Support pour cmd.data.description
                 const commandDescription = cmd.description || cmd.data?.description;
 
-                // Validation du type
+                // Validation du type (le type peut être porté par cmd.type ou par cmd.data.type,
+                // selon que la commande est construite avec un ContextMenuCommandBuilder ou non)
+                const resolvedType = cmd.type ?? cmd.data?.type;
                 const isContextMenu =
-                    cmd.type === ApplicationCommandType.User ||
-                    cmd.type === ApplicationCommandType.Message;
+                    resolvedType === ApplicationCommandType.User ||
+                    resolvedType === ApplicationCommandType.Message;
 
-                const isSlash = cmd.type === ApplicationCommandType.ChatInput || cmd.data;
+                const isSlash = !isContextMenu && !!cmd.data;
 
                 // Gestion des descriptions
                 if (isSlash) {
